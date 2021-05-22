@@ -4,7 +4,7 @@ from fetch_real_info import get_attraction_list
 
 
 def get_name_matching():
-    with open("name_matching.json", "r", encoding="utf-8") as f:
+    with open("./static_data/name_matching.json", "r", encoding="utf-8") as f:
         data = json.load(f)
         return { value: key for key, value in data.items() }
 
