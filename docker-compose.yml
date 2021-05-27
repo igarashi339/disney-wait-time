@@ -1,0 +1,11 @@
+version: '3'
+services:
+  scraping:
+    build:
+      context: ./scraping
+      dockerfile: Dockerfile
+    volumes:
+      - ./scraping:/code
+    ports:
+      - '8888:8888'
+    command: tail -f /dev/null
