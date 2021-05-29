@@ -9,7 +9,6 @@ def url_decoder(encrypted_url):
     for char in encrypted_url:
         ord_char = ord(char)
         decoded_url += chr(ord_char - 1)
-    print(decoded_url)
     return decoded_url
 
 

@@ -1,5 +1,6 @@
 import sys
 import json
+import urllib.request
 from fetch_real_info import get_attraction_list
 
 
@@ -29,10 +30,15 @@ def fetch_realtime_restaurants_info(name_matching):
 
 
 def post_spot_info(attractions_info, restaurants_info):
-    # GASに情報を送信する
-    # todo: ちゃんとした実装
+    url = "https://script.google.com/macros/s/AKfycbz_B_a0lg1Ialg0Gkvq3a_8aTs9D1Di04vnVnxXPCBQl5w3yld23bxr2JbPgwLrgtbT7g/exec"
+    method = "POST"
+    headers = {"Content-Type": "application/json"}
+    obj = {}
     for attraction in attractions_info:
-        print(attraction.name, attraction.enable, attraction.wait_time)
+        obj[attraction.name] = attraction.wait_time
+    json_data = json.dumps(obj).encode("utf-8")
+    request = urllib.request.Request(url, data=json_data, method=method, headers=headers)
+    urllib.request.urlopen(request)  # todo:エラーハンドリング
 
 
 def main():

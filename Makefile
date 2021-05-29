@@ -14,6 +14,6 @@ build:
 delete-all:
 	docker-compose down --rmi all --volumes
 
-.PHONY: fetch-sea
-fetch-sea:
+.PHONY: fetch-and-store-sea
+fetch-and-store-sea:
 	docker-compose exec scraping python src/sea/main.py
