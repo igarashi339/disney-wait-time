@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: exec
         run: make up
-        run: make fetch-and-store-sea
+             make fetch-and-store-sea
