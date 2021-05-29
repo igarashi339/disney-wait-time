@@ -11,5 +11,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: exec
-        run: make up
-             make fetch-and-store-sea
+        run: ls -l
