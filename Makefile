@@ -16,4 +16,4 @@ delete-all:
 
 .PHONY: fetch-and-store-sea
 fetch-and-store-sea:
-	docker-compose exec scraping python src/sea/main.py
+	docker-compose exec -T scraping python src/sea/main.py
