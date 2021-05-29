@@ -1,0 +1,14 @@
+name: Scheduled exec
+
+on:
+  schedule:
+  - cron: '*/10 * * * *'
+
+jobs:
+  build:
+    name: fetch-and-store
+    runs-on: ubuntu-latest
+    steps:
+      - name: exec
+        run: make up
+        run: make fetch-and-store-sea
