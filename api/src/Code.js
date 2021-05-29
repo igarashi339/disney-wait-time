@@ -1,26 +1,33 @@
-// const puppeteer = require('puppeteer');
-import { puppeteer } from './importable.js';
-
-function fetchWaitTimeData() {
-    // const url_key = "DISNEY_SEA_WAIT_TIME"
-    // const url = PropertiesService.getScriptProperties().getProperty(url_key)
-    const url = "https://disneyreal.asumirai.info/realtime/disneysea-wait-today.html"
-    
-    const testItems = async page => {
-        const items = await page.$$("div.realtime")
-        for (const item of items) {
-            const attractions = await item.$$("li")
-            console.log(attractions.length)
-        }
-    }
-
-    (async () => {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.goto(url)
-        await testItems(page)
-        await browser.close();
-    })();
+function doPost(e) {
+    const params = JSON.parse(e.postData.getDataAsString());
+    const keySortedList = makeKeySortedList(params)
+    const timeStamp = Math.round((new Date()).getTime() / 1000);
+    const writeTargetList = [ timeStamp ].concat(keySortedList)
+    writeToSpreadSheet(writeTargetList)
 }
 
-fetchWaitTimeData()
+/**
+ * dictを受け取り、key順でソートしたvalueのリストを返す
+ */
+function makeKeySortedList(dict) {
+  var keyList = []
+  for (var key in dict) {
+    keyList.push(key)
+  }
+  keyList.sort()
+  var valueList = []
+  for (var key of keyList) {
+    valueList.push(dict[key])
+  }
+  return valueList
+}
+
+/**
+ * arrayの内容をスプレッドシートの末尾に追加する
+ */
+function writeToSpreadSheet(array) {
+    const sheetId = "1GvymAJ57Il1dSbPGVeGv4PDwi6ymDs_MHfHDbosQFpc"
+    const sheetName = "wait_time"
+    var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(sheetName)
+    sheet.appendRow(array)
+}
