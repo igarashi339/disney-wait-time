@@ -1,8 +1,8 @@
 function doPost(e) {
     const params = JSON.parse(e.postData.getDataAsString());
     const keySortedList = makeKeySortedList(params)
-    const timeStamp = Math.round((new Date()).getTime() / 1000);
-    const writeTargetList = [ timeStamp ].concat(keySortedList)
+    const currentTime  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+    const writeTargetList = [ currentTime ].concat(keySortedList)
     writeToSpreadSheet(writeTargetList)
 }
 
