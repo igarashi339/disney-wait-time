@@ -35,7 +35,8 @@ def post_spot_info(attractions_info, restaurants_info):
     headers = {"Content-Type": "application/json"}
     obj = {}
     for attraction in attractions_info:
-        obj[attraction.name] = attraction.wait_time + "," + attraction.enable
+        enable_str = "T" if attraction.enable == 1 else "F"
+        obj[attraction.name] = attraction.wait_time + "," + enable_str
     json_data = json.dumps(obj).encode("utf-8")
     request = urllib.request.Request(url, data=json_data, method=method, headers=headers)
     urllib.request.urlopen(request)  # todo:エラーハンドリング
