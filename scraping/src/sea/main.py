@@ -30,13 +30,13 @@ def fetch_realtime_restaurants_info(name_matching):
 
 
 def post_spot_info(attractions_info, restaurants_info):
-    url = "https://script.google.com/macros/s/AKfycbz_B_a0lg1Ialg0Gkvq3a_8aTs9D1Di04vnVnxXPCBQl5w3yld23bxr2JbPgwLrgtbT7g/exec"
+    url = "https://script.google.com/macros/s/AKfycbyTT3mi5BwhqPhyjoLra9d9ZR_HX7ewbkGJkvDGhO02dNUs1dBjW2Aa1sss-YHjY5VVGA/exec"
     method = "POST"
     headers = {"Content-Type": "application/json"}
     obj = {}
     for attraction in attractions_info:
-        enable_str = "T" if attraction.enable == 1 else "F"
-        obj[attraction.name] = attraction.wait_time + "," + enable_str
+        enable_str = "運営中" if attraction.enable == 1 else "停止中"
+        obj[attraction.name] = enable_str + "," + str(attraction.wait_time)
     json_data = json.dumps(obj).encode("utf-8")
     request = urllib.request.Request(url, data=json_data, method=method, headers=headers)
     urllib.request.urlopen(request)  # todo:エラーハンドリング
