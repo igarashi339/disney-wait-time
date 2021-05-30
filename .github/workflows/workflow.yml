@@ -1,8 +1,6 @@
 name: Scheduled exec
 
 on:
-  schedule:
-  - cron: '* * * * *'
   workflow_dispatch:
 
 jobs:
