@@ -1,9 +1,24 @@
 function doPost(e) {
     const params = JSON.parse(e.postData.getDataAsString());
+    if (isInvalid(params)) {
+      return
+    }
     const keySortedList = makeKeySortedList(params)
     const currentTime  = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
     const writeTargetList = [ currentTime ].concat(keySortedList)
     writeToSpreadSheet(writeTargetList)
+}
+
+/**
+ * dictの中身がすべて「停止中,-1」の場合trueを返す
+ */
+function isInvalid(dict) {
+  for (var key in dict) {
+    if (dict[key] != "停止中,-1") {
+      return false
+    }
+  }
+  return true
 }
 
 /**
