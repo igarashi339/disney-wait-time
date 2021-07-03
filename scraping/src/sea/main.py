@@ -35,8 +35,10 @@ def post_spot_info(attractions_info, restaurants_info):
     headers = {"Content-Type": "application/json"}
     obj = {}
     for attraction in attractions_info:
-        enable_str = "運営中" if attraction.enable == 1 else "停止中"
-        obj[attraction.name] = enable_str + "," + str(attraction.wait_time)
+        enable_str = "中止" if attraction.disable_flag == 1 else "運営中"
+        obj[attraction.name] = enable_str + "," + \
+                               attraction.standby_pass_status + "," + \
+                               str(attraction.wait_time)
     json_data = json.dumps(obj).encode("utf-8")
     request = urllib.request.Request(url, data=json_data, method=method, headers=headers)
     urllib.request.urlopen(request)  # todo:エラーハンドリング

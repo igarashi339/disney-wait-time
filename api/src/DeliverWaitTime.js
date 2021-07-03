@@ -17,7 +17,7 @@ function getLatestWaitTime() {
     // スプレッドシートから情報を取得する
     const colNum = 30
     const key = sheet.getRange(1, 1, 1, colNum).getValues()[0]
-    const data = sheet.getRange(sheet.getLastRow() - 1, 1, 1, colNum).getValues()[0]
+    const data = sheet.getRange(sheet.getLastRow(), 1, 1, colNum).getValues()[0]
     var waitTimeDict = {}
     for (let i = 0; i < colNum; ++i) {
       waitTimeDict[key[i]] = data[i]
