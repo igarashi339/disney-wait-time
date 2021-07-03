@@ -30,7 +30,7 @@ def fetch_realtime_restaurants_info(name_matching):
 
 
 def post_spot_info(attractions_info, restaurants_info):
-    url = "https://script.google.com/macros/s/AKfycbzMWNM6QB2lgqFGcsyWHHvTinbNitmh2OmEPaXce8j8z6ufFf8mzojztc1nnj4nooF1jA/exec"
+    url = "https://script.google.com/macros/s/AKfycbxb7eif10mJTk8yweLmabtNBomRph2H-9E7phD8fv2WQiIgmwjmzHQTF2FXQu5eF737Ng/exec"
     method = "POST"
     headers = {"Content-Type": "application/json"}
     obj = {}
