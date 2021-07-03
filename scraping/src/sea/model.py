@@ -1,8 +1,9 @@
 class Attraction:
     INVALID_WAIT_TIME = -1
 
-    def __init__(self, name, enable, wait_time):
-        self.name = name
-        self.enable = enable
-        self.wait_time = wait_time
+    def __init__(self):
+        self.name = ""
+        self.disable_flag = False
+        self.standby_pass_status = "SP情報なし"
+        self.wait_time = -1
 

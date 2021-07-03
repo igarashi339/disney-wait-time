@@ -32,20 +32,27 @@ def parse_attraction(html):
         child_list = [child for child in realtime_class.children]
         ul_ = child_list[0]
         for li_ in ul_.children:
-            name = ""
+            attraction = Attraction()
             enable = False
             wait_time = Attraction.INVALID_WAIT_TIME
             if elem_desc := li_.find(class_='desc'):
-                desc_list = [child for child in elem_desc.children]
-                name = elem_desc.find('h4').text
-                elem_str = desc_list[-1].text.split()[0]
-                if '運営中' in elem_str:
-                    enable = True
+                # name
+                attraction.name = elem_desc.find('h4').text
+                # standby pass status
+                if elem_fp := elem_desc.find(class_="fp"):
+                    attraction.standby_pass_status = elem_fp.text
+                # disable_flag
+                for child in elem_desc.children:
+                    if not child:
+                        continue
+                    if not child.text:
+                        continue
+                    if "中止" in child.text:
+                        attraction.disable_flag = True
             if elem_time := li_.find(class_='time'):
-                if enable:
-                    wait_time_str = elem_time.find('p').text.strip('待ち時間').strip("分")
-                    wait_time = int(wait_time_str)
-            attraction_list.append(Attraction(name, enable, wait_time))
+                wait_time_str = elem_time.find('p').text.strip('待ち時間').strip("分")
+                attraction.wait_time = int(wait_time_str)
+            attraction_list.append(attraction)
     return attraction_list
 
 
