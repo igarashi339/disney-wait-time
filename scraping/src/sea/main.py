@@ -1,6 +1,7 @@
 import sys
 import json
 import urllib.request
+import datetime
 from fetch_real_info import get_attraction_list
 
 
@@ -29,6 +30,18 @@ def fetch_realtime_restaurants_info(name_matching):
     pass
 
 
+def is_night_time():
+    """
+    ディズニーパークの閉演時間中(22:00～翌7:00)かどうか判定する。
+    """
+    # UTC+9h(日本時刻）を取得
+    dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+    hour = dt_now.hour
+    print(hour)
+    if hour < 7 or 22 < hour:
+        return True
+    return False
+
 def post_spot_info(attractions_info, restaurants_info):
     url = "https://script.google.com/macros/s/AKfycbzMWNM6QB2lgqFGcsyWHHvTinbNitmh2OmEPaXce8j8z6ufFf8mzojztc1nnj4nooF1jA/exec"
     method = "POST"
@@ -45,6 +58,8 @@ def post_spot_info(attractions_info, restaurants_info):
 
 
 def main():
+    if is_night_time():
+        return
     name_matching = get_name_matching()
     attractions_info = fetch_realtime_attractions_info(name_matching)
     restaurants_info = fetch_realtime_restaurants_info(name_matching)
