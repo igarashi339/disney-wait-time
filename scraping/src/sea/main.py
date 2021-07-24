@@ -38,7 +38,7 @@ def is_night_time():
     dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     hour = dt_now.hour
     print(hour)
-    if hour < 7 or 22 < hour:
+    if hour < 7 or 21 < hour:
         return True
     return False
 
