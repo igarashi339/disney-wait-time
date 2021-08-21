@@ -64,8 +64,8 @@ def update_db(attractions_info, restaurants_info):
 
 
 def main():
-    # if is_night_time():
-    #     return
+    if is_night_time():
+        return
     name_matching = get_name_matching()
     attractions_info = fetch_realtime_attractions_info(name_matching)
     restaurants_info = fetch_realtime_restaurants_info(name_matching)
