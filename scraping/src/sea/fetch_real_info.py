@@ -19,12 +19,6 @@ def fetch_html():
 
 
 def parse_attraction(html):
-    '''
-    下記の情報を詰めてかえす
-    　・アトラクション名
-    　・運営中か否か
-    　・待ち時間
-    '''
     soup = BeautifulSoup(html, "html.parser")
     realtime_class_list = soup.find_all(class_='realtime')
     attraction_list = []

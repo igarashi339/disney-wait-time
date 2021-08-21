@@ -3,7 +3,7 @@ import json
 import urllib.request
 import datetime
 from fetch_real_info import get_attraction_list
-
+from db_handler import DBHandler
 
 def get_name_matching():
     with open("./static_data/name_matching.json", "r", encoding="utf-8") as f:
@@ -37,10 +37,10 @@ def is_night_time():
     # UTC+9h(日本時刻）を取得
     dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     hour = dt_now.hour
-    print(hour)
     if hour < 7 or 21 < hour:
         return True
     return False
+
 
 def post_spot_info(attractions_info, restaurants_info):
     url = "https://script.google.com/macros/s/AKfycbzMWNM6QB2lgqFGcsyWHHvTinbNitmh2OmEPaXce8j8z6ufFf8mzojztc1nnj4nooF1jA/exec"
@@ -57,13 +57,20 @@ def post_spot_info(attractions_info, restaurants_info):
     urllib.request.urlopen(request)  # todo:エラーハンドリング
 
 
+def update_db(attractions_info, restaurants_info):
+    obj = [attraction.to_dict() for attraction in attractions_info]
+    db_handler = DBHandler()
+    db_handler.update_raw_html("raw_html", json.dumps(obj,ensure_ascii=False))
+
+
 def main():
-    if is_night_time():
-        return
+    # if is_night_time():
+    #     return
     name_matching = get_name_matching()
     attractions_info = fetch_realtime_attractions_info(name_matching)
     restaurants_info = fetch_realtime_restaurants_info(name_matching)
     post_spot_info(attractions_info, restaurants_info)
+    update_db(attractions_info, restaurants_info)
 
 
 if __name__ == "__main__":
