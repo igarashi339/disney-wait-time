@@ -1,4 +1,4 @@
-name: Scheduled exec
+name: scrayping
 
 on:
   workflow_dispatch:
