@@ -14,7 +14,7 @@ class DBHandler:
     def __init_database_url(self):
         self.database_url = os.getenv('DATABASE_URL')
         if not self.database_url:
-            self.database_url = os.environ('DATABASE_URL')
+            self.database_url = str(os.environ('DATABASE_URL'))
 
     def update_raw_html(self, table_name, html_str):
         try:
