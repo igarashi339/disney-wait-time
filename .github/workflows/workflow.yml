@@ -3,6 +3,9 @@ name: Scheduled exec
 on:
   workflow_dispatch:
 
+env:
+  DATABASE_URL: ${{secrets.DATABASE_URL}}
+
 jobs:
   build:
     name: fetch-and-store

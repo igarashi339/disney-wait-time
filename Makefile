@@ -6,6 +6,14 @@ up:
 down:
 	docker-compose down
 
+.PHONY: shell
+shell:
+	docker-compose exec scraping bash
+
+.PHONY: heroku-login
+heroku-login:
+	docker-compose exec scraping scripts/heroku_login.sh
+
 .PHONY: build
 build:
 	docker-compose build --no-cache
