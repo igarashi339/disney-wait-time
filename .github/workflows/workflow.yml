@@ -1,16 +1,12 @@
 name: scrayping
-
 on:
   workflow_dispatch:
-
 env:
   DATABASE_URL: ${{secrets.DATABASE_URL}}
-
 jobs:
   build:
     name: fetch-and-store
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: make up
-      - run: make fetch-and-store-sea
+      - run: cd scraping && python src/sea/main.py
