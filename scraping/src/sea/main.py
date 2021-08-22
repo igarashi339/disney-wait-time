@@ -58,9 +58,9 @@ def post_spot_info(attractions_info, restaurants_info):
 
 
 def update_db(attractions_info, restaurants_info):
-    obj = [attraction.to_dict() for attraction in attractions_info]
+    obj = [ { attraction.name: attraction.to_dict() } for attraction in attractions_info]
     db_handler = DBHandler()
-    db_handler.update_raw_html("data", json.dumps(obj,ensure_ascii=False))
+    db_handler.update_raw_html("sea_attraction", json.dumps(obj,ensure_ascii=False))
 
 
 def main():
