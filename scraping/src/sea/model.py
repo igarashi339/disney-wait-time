@@ -12,7 +12,6 @@ class Attraction:
 
     def to_dict(self):
         ret_dict = {
-            "name": self.name,
             "disable-flag": self.disable_flag,
             "standby-pass-status": self.standby_pass_status,
             "wait-time": self.wait_time,
@@ -34,7 +33,6 @@ class Restaurant:
 
     def to_dict(self):
         ret_dict = {
-            "name": self.name,
             "disable-flag": self.disable_flag,
             "wait-time": self.wait_time,
             "status": self.status,
@@ -53,7 +51,6 @@ class Show:
 
     def to_dict(self):
         ret_dict = {
-            "name": self.name,
             "disable-flag": self.disable_flag,
             "next-start-time": self.next_start_time,
             "start-time-list": self.start_time_list
@@ -73,7 +70,6 @@ class Greeting:
 
     def to_dict(self):
         ret_dict = {
-            "name": self.name,
             "disable-flag": self.disable_flag,
             "standby-pass-status": self.standby_pass_status,
             "wait-time": self.wait_time,

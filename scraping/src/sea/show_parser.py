@@ -71,6 +71,7 @@ class ShowParser:
                 # ショー開始時間一覧
                 if ":" in child.text:
                     show.start_time_list = child.text.split(" ")
+
         # 次のショー開始時刻
         if elem_time := li.find(class_='time'):
             show.next_start_time = elem_time.find('p').text.strip('開始')

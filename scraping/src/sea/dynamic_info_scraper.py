@@ -1,11 +1,13 @@
 import os
 import time
+import json
+import urllib.request
+from dotenv import load_dotenv
+
 from attraction_parser import AttractionParser
 from greeting_parser import GreetingParser
 from restaurant_parser import RestaurantParser
 from show_parser import ShowParser
-from dotenv import load_dotenv
-import urllib.request
 
 
 class DynamicInfoScraper:
@@ -16,6 +18,8 @@ class DynamicInfoScraper:
         self.show_url = ""
         self.greeting_url = ""
         self.__init_url()
+        self.name_matching = {}
+        self.__load_name_matching()
 
     def __init_url(self):
         """
@@ -30,6 +34,16 @@ class DynamicInfoScraper:
             self.restaurant_url = str(os.environ['RESTAURANT_URL'])
             self.show_url = str(os.environ['SHOW_URL'])
             self.greeting_url = str(os.environ['GREETING_URL'])
+
+    def __load_name_matching(self):
+        """
+        disney-app とスクレイピング先の名称のマッピングファイルをロードする。
+
+        スクレイピング先名称 -> disney-app のマッピングを返却する。
+        """
+        with open("./static_data/name_matching.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+            self.name_matching = {value: key for key, value in data.items()}
 
     def __fetch_attraction_list(self):
         res = urllib.request.urlopen(self.attraction_url)
@@ -51,9 +65,10 @@ class DynamicInfoScraper:
         raw_html = res.read().decode()
         return GreetingParser.parse_html(raw_html)
 
-    def fetch_dynamic_info(self):
+    def __fetch_dynamic_info(self):
         """
-        スクレイピングを実施し、スポット名称をキーにしたdictの配列に変換する。
+        スクレイピングを実施し、スポット名称をキーにしたdictに変換する。
+        返却リスト中のスポット名称はすべてスクレイピング先の表記となっている。
         """
 
         # スクレイピング実行
@@ -71,6 +86,22 @@ class DynamicInfoScraper:
         all_spot_list.extend(restaurant_list)
         all_spot_list.extend(show_list)
         all_spot_list.extend(greeting_list)
-        all_spot_dict_list = [{spot.name: spot.to_dict()} for spot in all_spot_list ]
+        all_spot_dict = dict([(spot.name, spot.to_dict()) for spot in all_spot_list ])
 
-        return all_spot_dict_list
+        return all_spot_dict
+
+    def fetch_dynamic_info_and_mapping_name(self):
+        """
+        スクレイピングを実施し、スポット名称をキーにしたdictの配列に変換する。
+        また、スクレイピング先のスポット名称をdisney-appで扱うスポット名称に変換する。
+
+        note: disney-app側に名称が存在しないスポットについては返却しない。
+        """
+        all_spot_dict = self.__fetch_dynamic_info()
+        all_spot_replaced_name_dict = {}
+        for key in all_spot_dict:
+            if key not in self.name_matching:
+                continue
+            disney_app_name = self.name_matching[key]
+            all_spot_replaced_name_dict[disney_app_name] = all_spot_dict[key]
+        return all_spot_replaced_name_dict

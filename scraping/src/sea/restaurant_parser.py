@@ -68,6 +68,8 @@ class RestaurantParser:
                 if "-" in child.text and ":" in child.text:
                     restaurant.status, start_end_time = child.text.split(" ")
                     restaurant.start_time, restaurant.end_time = start_end_time.split("-")
+                else:
+                    restaurant.status = child.text.strip()
             # リアルタイム待ち時間
             if elem_time := li.find(class_='time'):
                 wait_time_str = elem_time.find('p').text.strip('待ち時間').strip("分")

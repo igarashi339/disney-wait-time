@@ -1,33 +1,8 @@
-import sys
 import json
 import urllib.request
 import datetime
-from fetch_real_info import get_attraction_list
 from db_handler import DBHandler
-
-def get_name_matching():
-    with open("./static_data/name_matching.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
-        return { value: key for key, value in data.items() }
-
-
-def fetch_realtime_attractions_info(name_matching):
-    ''' アトラクションのリアルタイム情報を取得する '''
-    attraction_list = get_attraction_list()
-    if not attraction_list:
-        sys.exit(1)
-    # disney-app に存在するスポットでフィルタをかける
-    attraction_list_filtered = []
-    for attraction in attraction_list:
-        if name_matching.get(attraction.name):
-            attraction.name = name_matching[attraction.name]
-            attraction_list_filtered.append(attraction)
-    return attraction_list_filtered
-
-
-def fetch_realtime_restaurants_info(name_matching):
-    # todo: 実装
-    pass
+from dynamic_info_scraper import DynamicInfoScraper
 
 
 def is_night_time():
@@ -42,35 +17,24 @@ def is_night_time():
     return False
 
 
-def post_spot_info(attractions_info, restaurants_info):
-    url = "https://script.google.com/macros/s/AKfycbzMWNM6QB2lgqFGcsyWHHvTinbNitmh2OmEPaXce8j8z6ufFf8mzojztc1nnj4nooF1jA/exec"
-    method = "POST"
-    headers = {"Content-Type": "application/json"}
-    obj = {}
-    for attraction in attractions_info:
-        enable_str = "中止" if attraction.disable_flag == 1 else "運営中"
-        obj[attraction.name] = enable_str + "," + \
-                               attraction.standby_pass_status + "," + \
-                               str(attraction.wait_time)
-    json_data = json.dumps(obj).encode("utf-8")
-    request = urllib.request.Request(url, data=json_data, method=method, headers=headers)
-    urllib.request.urlopen(request)  # todo:エラーハンドリング
-
-
-def update_db(attractions_info, restaurants_info):
-    obj = [ { attraction.name: attraction.to_dict() } for attraction in attractions_info]
+def update_db(dynamic_info_dict):
+    """
+    スクレイピング結果をDBに格納する。
+    """
     db_handler = DBHandler()
-    db_handler.update_raw_html("sea_attraction", json.dumps(obj,ensure_ascii=False))
+    db_handler.update_raw_html("sea_dynamic_data", json.dumps(dynamic_info_dict, ensure_ascii=False))
+    print(json.dumps(dynamic_info_dict, ensure_ascii=False))
 
 
 def main():
+    # 夜間であれば何もしない
     if is_night_time():
         return
-    name_matching = get_name_matching()
-    attractions_info = fetch_realtime_attractions_info(name_matching)
-    restaurants_info = fetch_realtime_restaurants_info(name_matching)
-    post_spot_info(attractions_info, restaurants_info)
-    update_db(attractions_info, restaurants_info)
+    # スクレイピング実施
+    dynamic_info_scraper = DynamicInfoScraper()
+    dynamic_info_dict = dynamic_info_scraper.fetch_dynamic_info_and_mapping_name()
+    # DB更新
+    update_db(dynamic_info_dict)
 
 
 if __name__ == "__main__":

@@ -77,6 +77,8 @@ class GreetingParser:
                     greeting.start_time = start_time_str.strip()
                     greeting.end_time = end_time_str.strip()
                     greeting.status = status_str.strip()
+                else:
+                    greeting.status = child.text.strip()
         # リアルタイム待ち時間
         if elem_time := li.find(class_='time'):
             wait_time_str = elem_time.find('p').text.strip('待ち時間').strip("分")
