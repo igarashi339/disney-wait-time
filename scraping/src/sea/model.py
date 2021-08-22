@@ -25,7 +25,23 @@ class Attraction:
 
 class Restaurant:
     def __init__(self):
-        pass
+        self.name = ""
+        self.disable_flag = False
+        self.wait_time = -1  # 待ち時間
+        self.status = ""
+        self.start_time = ""  # 営業開始時刻
+        self.end_time = ""  # 営業終了時刻
+
+    def to_dict(self):
+        ret_dict = {
+            "name": self.name,
+            "disable-flag": self.disable_flag,
+            "wait-time": self.wait_time,
+            "status": self.status,
+            "start-time": self.start_time,
+            "end-time": self.end_time
+        }
+        return ret_dict
 
 
 class Show:
