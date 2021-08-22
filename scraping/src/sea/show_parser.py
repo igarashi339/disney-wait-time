@@ -58,7 +58,7 @@ class ShowParser:
 
         show = Show()
         if elem_desc := li.find(class_='desc'):
-            # アトラクション名称
+            # ショー名称
             show.name = elem_desc.find('h4').text
             for child in elem_desc.children:
                 if not child:

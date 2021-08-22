@@ -61,6 +61,24 @@ class Show:
         return ret_dict
 
 
-
 class Greeting:
-    pass
+    def __init__(self):
+        self.name = ""
+        self.disable_flag = False
+        self.standby_pass_status = ""
+        self.wait_time = -1
+        self.status = ""
+        self.start_time = ""
+        self.end_time = ""
+
+    def to_dict(self):
+        ret_dict = {
+            "name": self.name,
+            "disable-flag": self.disable_flag,
+            "standby-pass-status": self.standby_pass_status,
+            "wait-time": self.wait_time,
+            "status": self.status,
+            "start-time": self.start_time,
+            "end-time": self.end_time
+        }
+        return ret_dict
