@@ -3,6 +3,10 @@ on:
   workflow_dispatch:
 env:
   DATABASE_URL: ${{secrets.DATABASE_URL}}
+  ATTRACTION_URL: ${{secrets.ATTRACTION_URL}}
+  RESTAURANT_URL: ${{secrets.RESTAURANT_URL}}
+  SHOW_URL: ${{secrets.SHOW_URL}}
+  GREETING_URL: ${{secrets.GREETING_URL}}
 jobs:
   build:
     name: fetch-and-store
