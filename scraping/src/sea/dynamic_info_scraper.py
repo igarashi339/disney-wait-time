@@ -57,15 +57,15 @@ class DynamicInfoScraper:
 
         # スクレイピング実行
         #attraction_list = self.__fetch_attraction_list()
-        restaurant_list = self.__fetch_restaurant_list()
-        # show_list = self.__fetch_show_list()
+        # restaurant_list = self.__fetch_restaurant_list()
+        show_list = self.__fetch_show_list()
         # greeting_list = self.__fetch_greeting_list()
 
         # スポット名称をキーにしたdictの配列に変換
         all_spot_list = []
         # all_spot_list.extend(attraction_list)
-        all_spot_list.extend(restaurant_list)
-        # all_spot_list.extend(show_list)
+        # all_spot_list.extend(restaurant_list)
+        all_spot_list.extend(show_list)
         # all_spot_list.extend(greeting_list)
         all_spot_dict_list = [{spot.name: spot.to_dict()} for spot in all_spot_list ]
 

@@ -45,7 +45,21 @@ class Restaurant:
 
 
 class Show:
-    pass
+    def __init__(self):
+        self.name = ""
+        self.disable_flag = False
+        self.start_time_list = []
+        self.next_start_time = ""
+
+    def to_dict(self):
+        ret_dict = {
+            "name": self.name,
+            "disable-flag": self.disable_flag,
+            "next-start-time": self.next_start_time,
+            "start-time-list": self.start_time_list
+        }
+        return ret_dict
+
 
 
 class Greeting:

@@ -76,7 +76,6 @@ class AttractionParser:
                 if "-" in child.text and ":" in child.text:
                     attraction.status, start_end_time = child.text.split(" ")
                     attraction.start_time,  attraction.end_time = start_end_time.split("-")
-
         # リアルタイム待ち時間
         if elem_time := li.find(class_='time'):
             wait_time_str = elem_time.find('p').text.strip('待ち時間').strip("分")

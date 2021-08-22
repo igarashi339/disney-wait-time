@@ -10,7 +10,7 @@ class RestaurantParser:
 
         Returns:
         --------
-        attraction_list : array-like(Restaurant)
+        restaurant_list : array-like(Restaurant)
             Restaurantオブジェクトのリスト。
         """
         soup = BeautifulSoup(raw_html, "html.parser")
