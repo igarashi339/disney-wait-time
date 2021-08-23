@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from model import Attraction
+from src.sea.model import Attraction
 
 
 class AttractionParser:

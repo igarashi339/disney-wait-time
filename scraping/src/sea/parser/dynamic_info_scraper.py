@@ -4,10 +4,10 @@ import json
 import urllib.request
 from dotenv import load_dotenv
 
-from attraction_parser import AttractionParser
-from greeting_parser import GreetingParser
-from restaurant_parser import RestaurantParser
-from show_parser import ShowParser
+from src.sea.parser.attraction_parser import AttractionParser
+from src.sea.parser.greeting_parser import GreetingParser
+from src.sea.parser.restaurant_parser import RestaurantParser
+from src.sea.parser.show_parser import ShowParser
 
 
 class DynamicInfoScraper:

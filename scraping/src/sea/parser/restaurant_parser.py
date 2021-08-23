@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from model import Restaurant
+from src.sea.model import Restaurant
 
 
 class RestaurantParser:

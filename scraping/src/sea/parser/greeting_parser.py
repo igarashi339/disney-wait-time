@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from model import Greeting
+from src.sea.model import Greeting
 
 
 class GreetingParser:

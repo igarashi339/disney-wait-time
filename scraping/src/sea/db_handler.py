@@ -1,5 +1,6 @@
 import datetime
 import os
+import sys
 import psycopg2
 from dotenv import load_dotenv
 from psycopg2.extras import DictCursor
@@ -16,19 +17,44 @@ class DBHandler:
         if not self.database_url:
             self.database_url = str(os.environ['DATABASE_URL'])
 
-    def update_raw_html(self, table_name, html_str):
+    def exec_query(self, query_str):
         try:
             with psycopg2.connect(self.database_url, sslmode='require') as conn:
                 with conn.cursor(cursor_factory=DictCursor) as cur:
-                    datetime_str = str(datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))))
-                    cur.execute("INSERT INTO " + table_name + " VALUES (\'"+ html_str +"\', \'" + datetime_str + "\');")
-                conn.commit()
+                    cur.execute(query_str)
         except Exception as e:
             print(e.__str__())
 
-    def get_single_record(self, table_name):
-        with psycopg2.connect(self.database_url, sslmode='require') as conn:
-            with conn.cursor(cursor_factory=DictCursor) as cur:
-                cur.execute("SELECT * FROM " + table_name + " ORDER BY updated_time DESC")
-                return cur.fetchone()
+    def update_dynamic_data_table(self, table_name, data_str):
+        """
+        dynamic_dataテーブルを更新する。
+        seaとlandの区別をつける必要が出てきた場合に備えて、テーブル名も指定できるようにしている。
+        """
+        datetime_str = str(datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))))
+        query_str = "INSERT INTO " + table_name + " VALUES (\'" + data_str + "\', \'" + datetime_str + "\');"
+        self.exec_query(query_str)
 
+    def select_resent_dynamic_data(self, table_name, date_num):
+        """
+        日数を指定して直近の動的情報を取得する。
+        seaとlandの区別をつける必要が出てきた場合に備えて、テーブル名も指定できるようにしている。
+
+        Return:
+        ------
+        date_str_list : array-like(str)
+            条件に合ったdataレコードの配列。
+        """
+        dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+        dt_specified_time = dt_now - datetime.timedelta(days=date_num)
+        query_str = "SELECT data from " + table_name +  " where datetime > \'" + str(dt_specified_time) + "\'"
+        date_str_list = []
+        try:
+            with psycopg2.connect(self.database_url, sslmode='require') as conn:
+                with conn.cursor(cursor_factory=DictCursor) as cur:
+                    cur.execute(query_str)
+                    for row in cur:
+                        date_str_list.append(row["data"])
+        except Exception as e:
+            print(e.__str__())
+            sys.exit()
+        return date_str_list
