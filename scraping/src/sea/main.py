@@ -2,7 +2,7 @@ import json
 import datetime
 import sys
 from db_handler import DBHandler
-from src.sea.parser.dynamic_info_scraper import DynamicInfoScraper
+from src.sea.dynamic_info_scraper import DynamicInfoScraper
 from mean_time_calculator import MeanTimeCalculator
 
 

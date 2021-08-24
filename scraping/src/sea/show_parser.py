@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from src.sea.model import Show
+from model import Show
 
 
 class ShowParser:
