@@ -31,7 +31,7 @@ def merge_dynamic_info_and_mean_wait_time(dynamic_info_dict, mean_wait_time_dict
     スクレイピング結果と平均待ち時間情報をマージする。
     """
     for spot_name in dynamic_info_dict:
-        if not dynamic_info_dict[spot_name].get("wait-time"):
+        if "wait-time" not in dynamic_info_dict[spot_name]:
             # wait-time 情報が存在しないスポットには平均待ち時間も付与しない
             continue
         if mean_wait_time_dict.get(spot_name):
