@@ -3,7 +3,7 @@ import datetime
 import sys
 from db_handler import DBHandler
 from dynamic_info_scraper import DynamicInfoScraper
-from mean_time_calculator import MeanTimeCalculator
+from past_record_analyzer import PastRecordAnalyzer
 
 
 def is_night_time():
@@ -18,18 +18,11 @@ def is_night_time():
     return False
 
 
-def update_db(dynamic_info_dict):
+def merge_dynamic_data(dynamic_info_dict, mean_wait_time_dict, business_hours_dict):
     """
-    スクレイピング結果をDBに格納する。
+    スクレイピング結果と平均待ち時間情報、スポットの営業時間をマージする。
     """
-    db_handler = DBHandler()
-    db_handler.update_dynamic_data_table("sea_dynamic_data", json.dumps(dynamic_info_dict, ensure_ascii=False))
-
-
-def merge_dynamic_info_and_mean_wait_time(dynamic_info_dict, mean_wait_time_dict):
-    """
-    スクレイピング結果と平均待ち時間情報をマージする。
-    """
+    # 平均待ち時間
     for spot_name in dynamic_info_dict:
         if "wait-time" not in dynamic_info_dict[spot_name]:
             # wait-time 情報が存在しないスポットには平均待ち時間も付与しない
@@ -38,6 +31,14 @@ def merge_dynamic_info_and_mean_wait_time(dynamic_info_dict, mean_wait_time_dict
             dynamic_info_dict[spot_name]["mean-wait-time"] = mean_wait_time_dict[spot_name]
         else:
             dynamic_info_dict[spot_name]["mean-wait-time"] = -1
+    # スポットの営業時間
+    for spot_name in dynamic_info_dict:
+        if "start-time" not in dynamic_info_dict[spot_name]:
+            continue
+        if "end-time" not in dynamic_info_dict[spot_name]:
+            continue
+        dynamic_info_dict[spot_name]["start-time"] = business_hours_dict[spot_name]["start-time"]
+        dynamic_info_dict[spot_name]["end-time"] = business_hours_dict[spot_name]["end-time"]
     return dynamic_info_dict
 
 
@@ -46,12 +47,17 @@ def main():
     dynamic_info_scraper = DynamicInfoScraper()
     dynamic_info_dict = dynamic_info_scraper.fetch_dynamic_info_and_mapping_name()
 
-    # 平均待ち時間を計算してデータをマージ
-    mean_wait_time_dict = MeanTimeCalculator.calc_mean_time(date_num=7)
-    dynamic_info_dict_with_mean_wait_time = merge_dynamic_info_and_mean_wait_time(dynamic_info_dict, mean_wait_time_dict)
+    # 過去1習慣の動的情報を取得
+    db_handler = DBHandler()
+    data_obj_list = db_handler.select_resent_dynamic_data(table_name="sea_dynamic_data", date_num=7)
+
+    # 平均待ち時間、およびスポットの営業時間を計算してデータをマージ
+    mean_wait_time_dict = PastRecordAnalyzer.calc_mean_time(data_obj_list)
+    business_hours_dict = PastRecordAnalyzer.calc_business_hours_dict(dynamic_info_dict, data_obj_list)
+    dynamic_info_dict = merge_dynamic_data(dynamic_info_dict, mean_wait_time_dict, business_hours_dict)
 
     # DB更新
-    update_db(dynamic_info_dict_with_mean_wait_time)
+    db_handler.update_dynamic_data_table("sea_dynamic_data", json.dumps(dynamic_info_dict, ensure_ascii=False))
 
 
 if __name__ == "__main__":
