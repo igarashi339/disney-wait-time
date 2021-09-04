@@ -47,7 +47,7 @@ def main():
     dynamic_info_scraper = DynamicInfoScraper()
     dynamic_info_dict = dynamic_info_scraper.fetch_dynamic_info_and_mapping_name()
 
-    # 過去1習慣の動的情報を取得
+    # 過去1週間の動的情報を取得
     db_handler = DBHandler()
     data_obj_list = db_handler.select_resent_dynamic_data(table_name="sea_dynamic_data", date_num=7)
 

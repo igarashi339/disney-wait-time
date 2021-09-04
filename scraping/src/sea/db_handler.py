@@ -47,14 +47,14 @@ class DBHandler:
         """
         dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
         dt_specified_time = dt_now - datetime.timedelta(days=date_num)
-        query_str = "SELECT data from " + table_name +  " where datetime > \'" + str(dt_specified_time) + "\' order by datetime DESC"
+        query_str = "SELECT * from " + table_name +  " where datetime > \'" + str(dt_specified_time) + "\' order by datetime DESC"
         date_str_list = []
         try:
             with psycopg2.connect(self.database_url, sslmode='require') as conn:
                 with conn.cursor(cursor_factory=DictCursor) as cur:
                     cur.execute(query_str)
                     for row in cur:
-                        date_str_list.append(json.loads(row["data"]))
+                        date_str_list.append((row["datetime"], (json.loads(row["data"]))))
         except Exception as e:
             print(e.__str__())
             sys.exit()
