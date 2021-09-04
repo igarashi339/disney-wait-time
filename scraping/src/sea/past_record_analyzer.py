@@ -3,8 +3,12 @@ DATA_COL = 1
 
 
 class PastRecordAnalyzer:
-    @staticmethod
-    def calc_mean_time(data_obj_list):
+    @classmethod
+    def tuple_to_str(cls, tuple_obj):
+        return str(tuple_obj[0]) + "~" + str(tuple_obj[1])
+
+    @classmethod
+    def calc_mean_time(cls, data_obj_list):
         """
         日数を指定し各スポットの直近の平均待ち時間を求める。
         ただし、待ち時間が-1または0のものは平均計算対象から除外される。
@@ -42,8 +46,51 @@ class PastRecordAnalyzer:
             mean_wait_time_dict[spot_name] = int(sum_wait_time_dict[spot_name] / target_record_num_dict[spot_name])
         return mean_wait_time_dict
 
-    @staticmethod
-    def calc_business_hours_dict(dynamic_info_dict, data_obj_list):
+    @classmethod
+    def calc_each_timespan_mean_time(cls, data_obj_list):
+        """
+        各タイムスパンの平均待ち時間を計算する。
+
+        Parameter:
+        ----------
+        data_obj_list : array-like(obj)
+            直近の動的データのリスト。
+
+        Return:
+        -------
+        name_mean_wait_time_dict : dict
+            名称 -> (時間帯 -> 平均待ち時間)　の辞書。
+        """
+        timespan_start_time = 7 # 時
+        timespan_end_time = 22  # 時
+        timespan_size = 1
+        target_timespan_list = [(begin, begin + timespan_size) for begin in range(timespan_start_time, timespan_end_time, timespan_size)]
+
+        # まず時間帯 -> (名称 -> 平均待ち時間)の辞書を計算する
+        timespan_name_meantime_dict = {}
+        for time_span in target_timespan_list:
+            timespan_name_meantime_dict[cls.tuple_to_str(time_span)] = {}
+            # 該当のタイムスパンの動的データのみフィルタリングする
+            target_time_dynamic_data_list = []
+            for data_obj in data_obj_list:
+                date_time = data_obj[DATETIME_COL]
+                if time_span[0] <= date_time.hour < time_span[1]:
+                    target_time_dynamic_data_list.append(data_obj)
+            mean_time_dict = PastRecordAnalyzer.calc_mean_time(target_time_dynamic_data_list)
+            timespan_name_meantime_dict[cls.tuple_to_str(time_span)] = mean_time_dict
+
+        # 名称 -> (時間帯 -> 平均待ち時間)の辞書に変換する
+        name_timespan_meantime_dict = {}
+        for time_span in target_timespan_list:
+            for name in timespan_name_meantime_dict[cls.tuple_to_str(time_span)]:
+                if name not in name_timespan_meantime_dict:
+                    name_timespan_meantime_dict[name] = {}
+                name_timespan_meantime_dict[name][cls.tuple_to_str(time_span)] = timespan_name_meantime_dict[cls.tuple_to_str(time_span)][name]
+        return name_timespan_meantime_dict
+
+
+    @classmethod
+    def calc_business_hours_dict(cls, dynamic_info_dict, data_obj_list):
         """
         各スポットの営業時間情報を計算する。
 

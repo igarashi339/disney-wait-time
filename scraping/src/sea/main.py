@@ -18,9 +18,9 @@ def is_night_time():
     return False
 
 
-def merge_dynamic_data(dynamic_info_dict, mean_wait_time_dict, business_hours_dict):
+def merge_dynamic_data(dynamic_info_dict, mean_wait_time_dict, business_hours_dict, timespan_mean_wait_time_dict):
     """
-    スクレイピング結果と平均待ち時間情報、スポットの営業時間をマージする。
+    スクレイピング結果と平均待ち時間情報、スポットの営業時間、時間帯ごとの平均待ち時間をマージする。
     """
     # 平均待ち時間
     for spot_name in dynamic_info_dict:
@@ -39,6 +39,14 @@ def merge_dynamic_data(dynamic_info_dict, mean_wait_time_dict, business_hours_di
             continue
         dynamic_info_dict[spot_name]["start-time"] = business_hours_dict[spot_name]["start-time"]
         dynamic_info_dict[spot_name]["end-time"] = business_hours_dict[spot_name]["end-time"]
+    # 時間帯ごとの平均待ち時間
+    for spot_name in dynamic_info_dict:
+        if "wait-time" not in dynamic_info_dict[spot_name]:
+            continue
+        if spot_name not in timespan_mean_wait_time_dict:
+            dynamic_info_dict[spot_name]["timespan-mean-wait-time"] = {}
+            continue
+        dynamic_info_dict[spot_name]["timespan-mean-wait-time"] = timespan_mean_wait_time_dict[spot_name]
     return dynamic_info_dict
 
 
@@ -53,8 +61,12 @@ def main():
 
     # 平均待ち時間、およびスポットの営業時間を計算してデータをマージ
     mean_wait_time_dict = PastRecordAnalyzer.calc_mean_time(data_obj_list)
+    timespan_mean_wait_time_dict = PastRecordAnalyzer.calc_each_timespan_mean_time(data_obj_list)
     business_hours_dict = PastRecordAnalyzer.calc_business_hours_dict(dynamic_info_dict, data_obj_list)
-    dynamic_info_dict = merge_dynamic_data(dynamic_info_dict, mean_wait_time_dict, business_hours_dict)
+    dynamic_info_dict = merge_dynamic_data(dynamic_info_dict,
+                                           mean_wait_time_dict,
+                                           business_hours_dict,
+                                           timespan_mean_wait_time_dict)
 
     # DB更新
     db_handler.update_dynamic_data_table("sea_dynamic_data", json.dumps(dynamic_info_dict, ensure_ascii=False))
