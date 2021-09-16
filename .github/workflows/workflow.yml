@@ -7,6 +7,7 @@ env:
   RESTAURANT_URL: ${{secrets.RESTAURANT_URL}}
   SHOW_URL: ${{secrets.SHOW_URL}}
   GREETING_URL: ${{secrets.GREETING_URL}}
+  OPENING_HOURS_URL: ${{secrets.OPENING_HOURS_URL}}
 jobs:
   build:
     name: fetch-and-store
