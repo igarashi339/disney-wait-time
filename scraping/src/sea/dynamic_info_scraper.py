@@ -8,6 +8,7 @@ from attraction_parser import AttractionParser
 from greeting_parser import GreetingParser
 from restaurant_parser import RestaurantParser
 from show_parser import ShowParser
+from opening_hours_parser import OpeningHoursParser
 
 
 class DynamicInfoScraper:
@@ -29,11 +30,13 @@ class DynamicInfoScraper:
         self.restaurant_url = os.getenv('RESTAURANT_URL')
         self.show_url = os.getenv('SHOW_URL')
         self.greeting_url = os.getenv('GREETING_URL')
-        if not self.attraction_url or not self.restaurant_url or not self.show_url or not self.greeting_url:
+        self.opening_hours_url = os.getenv('OPENING_HOURS_URL')
+        if not self.attraction_url or not self.restaurant_url or not self.show_url or not self.greeting_url or not self.opening_hours_url:
             self.attraction_url = str(os.environ['ATTRACTION_URL'])
             self.restaurant_url = str(os.environ['RESTAURANT_URL'])
             self.show_url = str(os.environ['SHOW_URL'])
             self.greeting_url = str(os.environ['GREETING_URL'])
+            self.opening_hours_url = str(os.environ['OPENING_HOURS_URL'])
 
     def __load_name_matching(self):
         """
@@ -65,6 +68,11 @@ class DynamicInfoScraper:
         raw_html = res.read().decode()
         return GreetingParser.parse_html(raw_html)
 
+    def __fetch_opening_hours(self):
+        res = urllib.request.urlopen(self.opening_hours_url)
+        raw_html = res.read().decode()
+        return OpeningHoursParser.parse_html(raw_html)
+
     def __fetch_dynamic_info(self):
         """
         スクレイピングを実施し、スポット名称をキーにしたdictに変換する。
@@ -79,13 +87,16 @@ class DynamicInfoScraper:
         show_list = self.__fetch_show_list()
         time.sleep(1)
         greeting_list = self.__fetch_greeting_list()
+        time.sleep(1)
+        opening_hours = self.__fetch_opening_hours()
 
-        # スポット名称をキーにしたdictの配列に変換
+        # 名称をキーにしたdictの配列に変換
         all_spot_list = []
         all_spot_list.extend(attraction_list)
         all_spot_list.extend(restaurant_list)
         all_spot_list.extend(show_list)
         all_spot_list.extend(greeting_list)
+        all_spot_list.append(opening_hours)
         all_spot_dict = dict([(spot.name, spot.to_dict()) for spot in all_spot_list ])
 
         return all_spot_dict
@@ -95,7 +106,9 @@ class DynamicInfoScraper:
         スクレイピングを実施し、スポット名称をキーにしたdictの配列に変換する。
         また、スクレイピング先のスポット名称をdisney-appで扱うスポット名称に変換する。
 
-        note: disney-app側に名称が存在しないスポットについては返却しない。
+        note:
+        ・disney-app側に名称が存在しないスポットについては返却しない。
+        　・例外的に、「開園時間」は返却する
         """
         all_spot_dict = self.__fetch_dynamic_info()
         all_spot_replaced_name_dict = {}
@@ -104,4 +117,5 @@ class DynamicInfoScraper:
                 continue
             disney_app_name = self.name_matching[key]
             all_spot_replaced_name_dict[disney_app_name] = all_spot_dict[key]
+        all_spot_replaced_name_dict["開園時間"] = all_spot_dict["開園時間"]
         return all_spot_replaced_name_dict
