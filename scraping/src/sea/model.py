@@ -92,7 +92,7 @@ class OpeningHours:
     def to_dict(self):
         ret_dict = {
             "name": self.name,
-            "open_time": self.open_time,
-            "close_time": self.close_time
+            "open-time": self.open_time,
+            "close-time": self.close_time
         }
         return ret_dict
