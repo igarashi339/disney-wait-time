@@ -31,8 +31,8 @@ class GreetingParser:
         # 待ち時間情報のリストのみ取り出す。
         ul_ = child_list[0]
         for li in ul_.children:
-            attraction = GreetingParser.__parse_single_attraction(li)
-            greeting_list.append(attraction)
+            greeting = GreetingParser.__parse_single_attraction(li)
+            greeting_list.append(greeting)
         return greeting_list
 
     @staticmethod

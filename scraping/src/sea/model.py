@@ -78,3 +78,21 @@ class Greeting:
             "end-time": self.end_time
         }
         return ret_dict
+
+
+class OpeningHours:
+    def __init__(self, opening_hours_str):
+        """
+        「10:00 ～ 19:00」形式の文字列を受け取る。
+        """
+        self.name = "開園時間"
+        self.open_time = opening_hours_str.split(" ～ ")[0]
+        self.close_time = opening_hours_str.split(" ～ ")[1]
+
+    def to_dict(self):
+        ret_dict = {
+            "name": self.name,
+            "open_time": self.open_time,
+            "close_time": self.close_time
+        }
+        return ret_dict
