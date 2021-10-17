@@ -69,8 +69,11 @@ class ShowParser:
                 if "中止" in child.text:
                     show.disable_flag = True
                 # ショー開始時間一覧
-                if ":" in child.text:
-                    show.start_time_list = child.text.split(" ")
+                show.start_time_list = []
+                start_time_list = child.text.split(" ")
+                for start_time in start_time_list:
+                    if ":" in start_time:
+                        show.start_time_list.append(start_time)
 
         # 次のショー開始時刻
         if elem_time := li.find(class_='time'):
