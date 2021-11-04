@@ -120,6 +120,7 @@ class PastRecordAnalyzer:
             if dynamic_info_dict[spot_name]["start-time"] != "" and dynamic_info_dict[spot_name]["end-time"] != "":
                 business_hours_dict[spot_name]["start-time"] = dynamic_info_dict[spot_name]["start-time"]
                 business_hours_dict[spot_name]["end-time"] = dynamic_info_dict[spot_name]["end-time"]
+                continue
             # 過去をさかのぼって不正でない営業時間を見つける
             for obj in data_obj_list:
                 data_obj = obj[DATA_COL]
