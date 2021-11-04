@@ -66,8 +66,10 @@ class RestaurantParser:
                     restaurant.disable_flag = True
                 # ステータス・営業時間
                 if "-" in child.text and ":" in child.text:
-                    restaurant.status, start_end_time = child.text.split(" ")
-                    restaurant.start_time, restaurant.end_time = start_end_time.split("-")
+                    splited_result = child.text.split(" ")
+                    if len(splited_result) == 2:
+                        restaurant.status, start_end_time = child.text.split(" ")
+                        restaurant.start_time, restaurant.end_time = start_end_time.split("-")
                 else:
                     restaurant.status = child.text.strip()
             # リアルタイム待ち時間
