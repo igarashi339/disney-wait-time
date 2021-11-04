@@ -35,6 +35,15 @@ class DBHandler:
         query_str = "INSERT INTO " + table_name + " VALUES (\'" + data_str + "\', \'" + datetime_str + "\');"
         self.exec_query(query_str)
 
+    def delete_unnecessary(self, table_name, date_num):
+        """
+        DB中の古いレコードを削除する。
+        """
+        dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+        dt_specified_time = dt_now - datetime.timedelta(days=date_num)
+        query_str = "DELETE FROM " + table_name + " where datetime < " + "\'" + str(dt_specified_time) + "\'"
+        self.exec_query(query_str)
+
     def select_resent_dynamic_data(self, table_name, date_num):
         """
         日数を指定して直近の動的情報を取得する。
@@ -47,7 +56,7 @@ class DBHandler:
         """
         dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
         dt_specified_time = dt_now - datetime.timedelta(days=date_num)
-        query_str = "SELECT * from " + table_name +  " where datetime > \'" + str(dt_specified_time) + "\' order by datetime DESC"
+        query_str = "SELECT * from " + table_name + " where datetime > \'" + str(dt_specified_time) + "\' order by datetime DESC"
         date_str_list = []
         try:
             with psycopg2.connect(self.database_url, sslmode='require') as conn:

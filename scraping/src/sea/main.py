@@ -70,6 +70,7 @@ def main():
 
     # DB更新
     db_handler.update_dynamic_data_table("sea_dynamic_data", json.dumps(dynamic_info_dict, ensure_ascii=False))
+    db_handler.delete_unnecessary("sea_dynamic_data", date_num=30)
 
 
 if __name__ == "__main__":
