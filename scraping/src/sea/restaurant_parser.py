@@ -76,5 +76,6 @@ class RestaurantParser:
                 # 時間に幅がある場合は最も大きい値をとる
                 if "-" in wait_time_str:
                     wait_time_str = wait_time_str.split("-")[-1]
-                restaurant.wait_time = int(wait_time_str)
+                if wait_time_str.strip() != "":
+                    restaurant.wait_time = int(wait_time_str)
         return restaurant
