@@ -131,4 +131,5 @@ class PastRecordAnalyzer:
                 if data_obj[spot_name]["start-time"] != "" and data_obj[spot_name]["end-time"] != "":
                     business_hours_dict[spot_name]["start-time"] = data_obj[spot_name]["start-time"]
                     business_hours_dict[spot_name]["end-time"] = data_obj[spot_name]["end-time"]
+                    break
         return business_hours_dict
