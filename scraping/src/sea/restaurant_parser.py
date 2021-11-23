@@ -77,7 +77,8 @@ class RestaurantParser:
                 wait_time_str = elem_time.find('p').text.strip('待ち時間').strip("分")
                 # 時間に幅がある場合は最も大きい値をとる
                 if "-" in wait_time_str:
-                    wait_time_str = wait_time_str.split("-")[-1]
+                    wait_time_min, wait_time_max = wait_time_str.split("-")
+                    wait_time_str = wait_time_max if wait_time_max != "" else wait_time_min
                 if wait_time_str.strip() != "":
                     restaurant.wait_time = int(wait_time_str)
         return restaurant
