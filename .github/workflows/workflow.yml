@@ -1,18 +1,18 @@
-name: scrayping
-on:
-  workflow_dispatch:
-env:
-  DATABASE_URL: ${{secrets.DATABASE_URL}}
-  ATTRACTION_URL: ${{secrets.ATTRACTION_URL}}
-  RESTAURANT_URL: ${{secrets.RESTAURANT_URL}}
-  SHOW_URL: ${{secrets.SHOW_URL}}
-  GREETING_URL: ${{secrets.GREETING_URL}}
-  OPENING_HOURS_URL: ${{secrets.OPENING_HOURS_URL}}
-jobs:
-  build:
-    name: fetch-and-store
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: pip install -r scraping/requirements.txt
-      - run: cd scraping && python src/sea/main.py
+# name: scrayping
+# on:
+#   workflow_dispatch:
+# env:
+#   DATABASE_URL: ${{secrets.DATABASE_URL}}
+#   ATTRACTION_URL: ${{secrets.ATTRACTION_URL}}
+#   RESTAURANT_URL: ${{secrets.RESTAURANT_URL}}
+#   SHOW_URL: ${{secrets.SHOW_URL}}
+#   GREETING_URL: ${{secrets.GREETING_URL}}
+#   OPENING_HOURS_URL: ${{secrets.OPENING_HOURS_URL}}
+# jobs:
+#   build:
+#     name: fetch-and-store
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - run: pip install -r scraping/requirements.txt
+#       - run: cd scraping && python src/sea/main.py
